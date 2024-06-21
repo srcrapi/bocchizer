@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Start</title>
+    <link
+      rel="shortcut icon"
+      href="../static/img/logo.ico"
+      type="image/x-icon"
+    />
+    <style>
+			@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+      * {
+        margin: 0;
+        padding: 0;
+        border: 0;
+				font-family: Montserrat, Arial, Helvetica, sans-serif;;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      main {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100svh;
+
+        background-image: url("static/img/niko.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-attachment: fixed;
+      }
+
+      button {
+				font-size: 1.5rem;
+				background-color: #9C2648;
+				color: white;
+				border-radius: 7px;
+        padding: 7px;
+				transition: all 0.3s ease-in;
+      }
+
+			button:hover {
+				transform: translateY(-3px);
+				box-shadow: 2px 2px white;
+			}
+    </style>
+  </head>
+  <body>
+    <main>
+      <button id="csv-file">Select file</button>
+    </main>
+
+    <script>
+      let csvFile = document.getElementById("csv-file");
+
+      csvFile.addEventListener("click", () => {
+        fetch("/dados")
+          .then((response) => response.json())
+          .then((data) => console.log(data))
+          .catch((error) => console.log("Error: " + error));
+      });
+    </script>
+  </body>
+</html>
