@@ -28,6 +28,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-direction: column;
         height: 100svh;
 
         background-image: url("static/img/niko.png");
@@ -50,22 +51,41 @@
 				transform: translateY(-3px);
 				box-shadow: 2px 2px white;
 			}
+
+      a {
+        display: none;
+        color: white;
+        margin-top: 10px;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
     </style>
   </head>
   <body>
     <main>
-      <button id="csv-file">Select file</button>
+      <button id="select-file-btn">Select file</button>
+      
+      <a href="./table" id="data-table">See CSV file Data</a>
     </main>
 
     <script>
-      let csvFile = document.getElementById("csv-file");
+      document.getElementById("select-file-btn").addEventListener("click", () => {
+        fetch("/data")
+          .then(response => {
+            if (response.ok) {
+              document.getElementById("data-table").style.display = "block";
+              return response.json();
+            }
 
-      csvFile.addEventListener("click", () => {
-        fetch("/dados")
-          .then((response) => response.json())
-          .then((data) => console.log(data))
-          .catch((error) => console.log("Error: " + error));
-      });
+            throw new Error("Failed to fetch data");
+          })
+          .then(data => console.log(data))
+          .catch(error => console.error("Error:", error))
+
+      })
     </script>
   </body>
 </html>

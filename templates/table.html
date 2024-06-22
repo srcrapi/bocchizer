@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Start</title>
+    <link
+      rel="shortcut icon"
+      href="../static/img/logo.ico"
+      type="image/x-icon"
+    />
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th, td {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+      }
+      
+      th {
+        background-color: #f4f4f4;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>CSV Data</h1>
+
+      <a href="/">Go back</a>
+
+      <br>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Marca</th>
+            <th>Referencia</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in data %}
+          <tr>
+            <td>{{ item["Marca"] }}</td>
+            <td>{{ item["Ref"] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </main>
+    </body>
+</html>

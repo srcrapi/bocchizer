@@ -1,4 +1,5 @@
 import threading
+import json
 
 import tkinter as tk
 import pandas as pd
@@ -8,15 +9,13 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions 
 from tkinter import filedialog
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, redirect, url_for
 from markupsafe import escape
 from werkzeug.serving import make_server
-# import webview
+import webview
 
 
 app = Flask(__name__)
@@ -26,14 +25,12 @@ def index():
     return render_template("index.html")
 
 
-"""
 def html_interface():
-    window = webview.create_window("Imagizer", url="127.0.0.1:5000", width=1580, height=760, resizable=False)
+    window = webview.create_window("Imagizer", url="http://localhost:5000", width=1280, height=760, resizable=True)
     webview.start()
-"""
 
 
-def select_file():
+def select_csv_file():
     root = tk.Tk()
     root.withdraw()
 
@@ -42,42 +39,12 @@ def select_file():
     return file_path
 
 
-def check_driver():
-    firefox_found = False
-    chrome_found = False
-
-    try:
-        ChromeDriverManager().install()
-        chrome_found = True
-    except:
-        pass
-
-
-    try:
-        GeckoDriverManager().install()
-        firefox_found = True
-    except:
-        pass
-
-
-    if firefox_found and chrome_found:
-        return "firefox"
-    
-    if firefox_found:
-        return "firefox"
-
-    if chrome_found:
-        return "chrome"
-
+"""
 def web_search(search_term: str, num_images: int = 6) -> list:
-    """
     Pesquisa o item no google images e retorna a sua url
 
     :param search_term: Termo que vai ser usado na pesquisa
     :return: Retorna a url da imagem
-    """
-
-    driver_to_use = check_driver()
 
     chrome_options = Options()
     chrome_options.add_argument("--headless")
@@ -110,35 +77,63 @@ def web_search(search_term: str, num_images: int = 6) -> list:
         return url
     finally:
         driver.quit()
+"""
 
 
-@app.route("/dados")
+def save_data(data, filename: str) -> None:
+    with open(filename, "w") as json_file:
+        json.dump(data, json_file)
+
+
+def load_data(filename: str):
+    with open(filename, "r") as json_file:
+        return json.load(json_file)
+
+
+@app.route("/data")
 def get_data():
     try:
-        csv_file_path = select_file()
+        csv_file_path = select_csv_file()
 
         df: TextFileReader = pd.read_csv(csv_file_path, delimiter=";")
     
-        marcas: list[str] = df["Marca"].tolist()
-        referencia: list[str] = df["Ref"].tolist()
-    
-        data: list[dict] = df.to_dict(orient="records")
+        marcas = df["Marca"].tolist()
+        referencia = df["Ref"].tolist()
         
+        data = df.to_dict(orient="records")
+
+        save_data(data, "data.json")
+        """
         urls = []
 
         for item in data:
             url_images: list = web_search(f"{item['Marca']} {item['Ref']}")
             print(url_images)
             urls.append({item["Ref"]: url_images})
+        """
 
-        return jsonify(urls)
+        return render_template("index.html", data=data)
 
     except Exception as e:
         print(f"Error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+
+@app.route("/table")
+def show_table():
+    try: 
+        data = load_data("data.json")
+
+        return render_template("table.html", data=data)
+    except Exception as e:
+        print(f"Error: {e}")
+
+        return jsonify({"error": str(e)}), 500
 
     
 def run_flask_app():
-    server = make_server("localhost", "5555", app)
+    server = make_server("localhost", "5000", app)
     server.serve_forever()
 
 
@@ -147,4 +142,4 @@ if __name__ == "__main__":
     flask_theread = threading.Thread(target=run_flask_app)
     flask_theread.start()
 
-    #html_interface()
+    html_interface()
