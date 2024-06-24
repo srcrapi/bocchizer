@@ -79,12 +79,9 @@
               document.getElementById("data-table").style.display = "block";
               return response.json();
             }
-
-            throw new Error("Failed to fetch data");
           })
           .then(data => console.log(data))
           .catch(error => console.error("Error:", error))
-
       })
     </script>
     <script src="/static/background.js"></script>
