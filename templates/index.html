@@ -10,13 +10,13 @@
       type="image/x-icon"
     />
     <style>
-			@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
       * {
         margin: 0;
         padding: 0;
         border: 0;
-				font-family: Montserrat, Arial, Helvetica, sans-serif;;
+        font-family: Montserrat, Arial, Helvetica, sans-serif;
       }
 
       html,
@@ -24,33 +24,60 @@
         height: 100%;
       }
 
-      main {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        height: 100svh;
-
+      body {
+        background-image: url("../static/img/niko.png");
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
         background-attachment: fixed;
       }
 
-      #select-file-btn {
-				font-size: 1.5rem;
-				background-color: #9C2648;
-				color: white;
-				border-radius: 7px;
-        padding: 7px;
-        cursor: pointer;
-				transition: all 0.3s ease-in;
+      main {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        height: 95.5svh;
       }
 
-			#select-file-btn:hover {
-				transform: translateY(-3px);
-				box-shadow: 2px 2px white;
-			}
+      #select-file-btn {
+        font-size: 1.5rem;
+        background-color: #9c2648;
+        color: white;
+        border-radius: 7px;
+        padding: 7px;
+        cursor: pointer;
+        transition: all 0.3s ease-in;
+      }
+
+      #select-file-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 3px 3px #fcf853;
+      }
+
+      .result-container {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        margin-top: 7px;
+        padding: 7px;
+        background-color: #1e0341;
+        border: 2px solid white;
+        border-radius: 7px;
+        animation: fadeInScale 0.5s ease-in-out;
+      }
+
+      @keyframes fadeInScale {
+        from {
+          opacity: 0;
+          transform: scale(0.7);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
 
       #data-table {
         display: none;
@@ -62,28 +89,85 @@
       #data-table:hover {
         text-decoration: underline;
       }
+
+      .result {
+        display: none;
+        font-size: 500;
+        color: #9c2648;
+      }
+
+      footer {
+        text-align: center;
+      }
+
+      .copyright {
+        font-weight: 500;
+      }
+
+      .copyright > a {
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      .copyright > a:hover {
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+      }
     </style>
   </head>
   <body>
     <main>
       <button id="select-file-btn">Select file</button>
-      
-      <a href="./table" id="data-table">See CSV file Data</a>
+
+      <div class="result-container">
+        <span>
+          <a href="./table" id="data-table" rel="next">See CSV file Data</a>
+        </span>
+        <br />
+        <p class="result"></p>
+      </div>
     </main>
+    <footer>
+      <span class="copyright"
+        >Made by
+        <a
+          href="https://github.com/srcrapi/"
+          id="author"
+          rel="author"
+          target="_blank"
+          >rap1</a
+        ></span
+      >
+    </footer>
 
     <script>
-      document.getElementById("select-file-btn").addEventListener("click", () => {
-        fetch("/data")
-          .then(response => {
-            if (response.ok) {
-              document.getElementById("data-table").style.display = "block";
-              return response.json();
-            }
-          })
-          .then(data => console.log(data))
-          .catch(error => console.error("Error:", error))
-      })
+      document
+        .getElementById("select-file-btn")
+        .addEventListener("click", () => {
+          fetch("/data")
+            .then((response) => {
+              if (response.ok) {
+                document.getElementById("data-table").style.display = "block";
+                document.querySelector(".result-container").style.display =
+                  "flex";
+                document.querySelector(".result").style.display = "block";
+
+                return response.json();
+              }
+            })
+            .then((data) => {
+              let result = document.querySelector(".result");
+
+              if (data.result) {
+                result.innerHTML = `Saved images in: ${data.program_path}`;
+              } else {
+                result.innerHTML = "Failed to download the images.";
+              }
+            })
+            .catch((error) => console.error("Error:", error));
+        });
     </script>
     <script src="/static/background.js"></script>
+    <script src="/static/main.js"></script>
   </body>
 </html>
