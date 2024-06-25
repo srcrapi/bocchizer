@@ -2,8 +2,6 @@ import time
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from webdriver_manager.firefox import GeckoDriverManager
@@ -29,7 +27,7 @@ class WebSearcher:
             url = f"https://www.google.co.in/search?q={search_term.replace(' ', '+')}&source=lnms&tbm=isch"
             driver.get(url)
 
-            time.sleep(2) 
+            time.sleep(0.3) 
             
             images = driver.find_elements(By.CLASS_NAME, "YQ4gaf")
 
