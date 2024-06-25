@@ -15,7 +15,7 @@ cd bocchizer
 ```
 
 Install all the dependencies and run
-```py
+```bash
 pip install -r requirements.txt
 
 python app.py
