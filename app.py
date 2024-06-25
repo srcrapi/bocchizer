@@ -3,17 +3,18 @@ import json
 
 import tkinter as tk
 import pandas as pd
-from pandas.io.parsers import TextFileReader
 from tkinter import filedialog
 from flask import Flask, render_template, jsonify
-from markupsafe import escape
 from werkzeug.serving import make_server
-from components.web_searcher import WebSearcher
 import webview
+
+from components.web_searcher import WebSearcher
+from components.web_searcher import ImageDownloader
 
 
 app = Flask(__name__)
 web_search = WebSearcher()
+image_downloader = ImageDownloader()
 
 @app.route("/")
 def index():
@@ -21,7 +22,7 @@ def index():
 
 
 def html_interface():
-    window = webview.create_window("Imagizer", url="http://localhost:5000", width=1280, height=760, resizable=True)
+    webview.create_window("Bocchizer", url="http://localhost:5000", width=1280, height=760, resizable=True)
     webview.start()
 
 
@@ -44,13 +45,14 @@ def load_data(filename: str):
         return json.load(json_file)
 
 
+
 @app.route("/data")
 def get_data():
     try:
         csv_file_path = select_csv_file()
 
-        df: TextFileReader = pd.read_csv(csv_file_path, delimiter=";")
-    
+        df = pd.read_csv(csv_file_path, delimiter=";")
+
         data = df.to_dict(orient="records")
 
         save_data(data, "data.json")
@@ -60,24 +62,19 @@ def get_data():
         for item in data:
             url_images = web_search.search(f"{item['Marca']} {item['Ref']}")
             urls[item["Ref"]] = url_images
-                        
 
-        for ref, image in urls.items(): 
-            print(f"Referencia {ref}:")
-            for img in image:
-                print(f"Imagens: {img}")
-            
-        return render_template("index.html", data=data)
+        result, program_path = image_downloader.create_folder(urls)
+
+        return jsonify({"result": result, "program_path": program_path}), 200
 
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"error": str(e)}), 500
 
 
-
 @app.route("/table")
 def show_table():
-    try: 
+    try:
         data = load_data("data.json")
 
         return render_template("table.html", data=data)
@@ -86,14 +83,13 @@ def show_table():
 
         return jsonify({"error": str(e)}), 500
 
-    
+
 def run_flask_app():
-    server = make_server("localhost", "5000", app)
+    server = make_server("localhost", 5000, app)
     server.serve_forever()
 
 
 if __name__ == "__main__":
-
     flask_theread = threading.Thread(target=run_flask_app)
     flask_theread.start()
 
