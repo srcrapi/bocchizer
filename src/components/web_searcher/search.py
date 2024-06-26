@@ -20,15 +20,16 @@ class WebSearcher:
         :param search_term: Termo que vai ser usado na pesquisa
         :return: Retorna a url da imagem
         """
-        
-        driver = webdriver.Firefox(options=self.options)
-    
+
+        service = FirefoxService(GeckoDriverManager().install())
+        driver = webdriver.Firefox(service=service, options=self.options)
+
         try:
             url = f"https://www.google.co.in/search?q={search_term.replace(' ', '+')}&source=lnms&tbm=isch"
             driver.get(url)
 
-            time.sleep(0.3) 
-            
+            time.sleep(0.3)
+
             images = driver.find_elements(By.CLASS_NAME, "YQ4gaf")
 
             url_images = [img.get_attribute("src") for img in images[:num_images] if img.get_attribute("src")]
@@ -39,5 +40,5 @@ class WebSearcher:
 
 
 if __name__ == "__main__":
-    searcher = WebSearcher()
-    print(searcher.search("Dell 725y7", num_images=5))
+    ws = WebSearcher()
+    print(ws.search("ryo yamada", num_images=15))

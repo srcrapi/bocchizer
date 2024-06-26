@@ -1,7 +1,10 @@
 import os
+import time
 import base64
 import re
 import requests
+from PIL import Image
+
 
 class ImageDownloader:
     def __init__(self):
@@ -48,6 +51,7 @@ class ImageDownloader:
 
             # save the file with a specific filename
             image_path = os.path.join(ref_path, f"{ref}-{count}.png")
+
 
             with open(image_path, "ab") as file:
                 file.write(image_data)
