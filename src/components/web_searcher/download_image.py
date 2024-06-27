@@ -1,9 +1,7 @@
 import os
 import time
-import base64
-import re
-import requests
-from PIL import Image
+
+from icrawler.builtin import GoogleImageCrawler
 
 
 class ImageDownloader:
@@ -12,63 +10,63 @@ class ImageDownloader:
         self.documents_path = os.path.join(self.home_dir, "Documents")
         self.program_dir = os.path.join(self.documents_path, "Bocchizer")
 
-    def create_folder(self, urls: dict[str, list[str]]) -> tuple[bool, str]:
+    def create_folder(self, urls: dict[str, str], num_image: int = 6) -> tuple[bool, str]:
         if not os.path.exists(self.program_dir):
             os.mkdir(self.program_dir)
 
         result = True
 
-        for ref, url_list in urls.items():
+        for ref, search_term in urls.items():
             ref_path = os.path.join(self.program_dir, ref)
 
             if not os.path.exists(ref_path):
                 os.mkdir(ref_path)
 
-            for index, url in enumerate(url_list, start=1):
-                current_result = self.download_image(url, ref, ref_path, index)
+            sucess = self.download_image(search_term, num_image, ref_path)
 
-                if not current_result:
-                    result = False
+            if sucess:
+                self.rename_images(ref_path, ref)
+            else:
+                result = False
+                break
 
         return result, self.program_dir
 
+    def download_image(self, search_term: str, num_image: int, ref_path: str) -> bool:
+        attempts = 0;
 
-    def download_image(self, url: str, ref: str, ref_path: str, count: int) -> bool:
-        """
-        Downloads an image with the given URL and saves it to the specified path.
+        while attempts < 3:
+            try:
+                google_crawler = GoogleImageCrawler(storage={'root_dir': ref_path})
 
-        :param url: the URL of the image to download
-        :param ref: the reference number of the product
-        :param ref_path: the path where the image will be saved
-        :param count: the count to identify all images with the same reference number
-        """
-        try:
-            # extract the base64 data from the "URL"
-            base64_data = re.sub('^data:image/.+;base64,', '', url)
+                google_crawler.crawl(
+                    keyword=search_term,
+                    max_num=num_image,
+                )
 
-            # decode the base64 data
-            image_data = base64.b64decode(base64_data)
+                return True
+            except Exception as e:
+                print(f"Error downloading images: {e}")
+                attempts += 1
+                time.sleep(1)
 
-            # save the file with a specific filename
-            image_path = os.path.join(ref_path, f"{ref}-{count}.png")
-
-
-            with open(image_path, "ab") as file:
-                file.write(image_data)
-
-            return True
-
-        except Exception as e:
-            print(f"Error decoding base64 data: {e}")
-            return False
+        return False
 
 
+    def rename_images(self, path: str, ref: str) -> None:
+        images = os.listdir(path)
+
+        for i, image in enumerate(images, start=1):
+            new_name = f"{ref}-{i}.jpg"
+            os.rename(os.path.join(path, image), os.path.join(path, new_name))
 
 if __name__ == "__main__":
     downloader = ImageDownloader()
 
     urls = {
-        "image1": ["data:image/jpeg;base64,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"]
+        "725y7": "Dell 725y7",
+        "UVC-G3-FLEX": "Ubiquiti UVC-G3-FLEX"
     }
 
-    downloader.create_folder(urls)
+    sucess, path = downloader.create_folder(urls)
+    print(f"Download sucess: {sucess}, images saved to: {path}")

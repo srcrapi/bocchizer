@@ -8,12 +8,10 @@ from flask import Flask, render_template, jsonify
 from werkzeug.serving import make_server
 import webview
 
-from components.web_searcher import WebSearcher
 from components.web_searcher import ImageDownloader
 
 
 app = Flask(__name__)
-web_search = WebSearcher()
 image_downloader = ImageDownloader()
 
 @app.route("/")
@@ -57,13 +55,11 @@ def get_data():
 
         save_data(data, "data.json")
 
-        urls = {}
-
         for item in data:
-            url_images = web_search.search(f"{item['Marca']} {item['Ref']}")
-            urls[item["Ref"]] = url_images
-
-        result, program_path = image_downloader.create_folder(urls)
+            result, program_path = image_downloader.create_folder(
+                {item['Ref']: f"{item['Marca']} {item['Ref']}"},
+                num_image=6
+            )
 
         return jsonify({"result": result, "program_path": program_path}), 200
 
