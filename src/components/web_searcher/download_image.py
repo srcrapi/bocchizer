@@ -39,11 +39,17 @@ class ImageDownloader:
 
         while attempts < 3:
             try:
-                google_crawler = GoogleImageCrawler(storage={'root_dir': ref_path})
+                google_crawler = GoogleImageCrawler(
+                    feeder_threads=1,
+                    parser_threads=2,
+                    downloader_threads=4,
+                    storage={'root_dir': ref_path}
+                )
 
                 google_crawler.crawl(
                     keyword=search_term,
                     max_num=num_image,
+                    filters={"size": "medium"}
                 )
 
                 return True
