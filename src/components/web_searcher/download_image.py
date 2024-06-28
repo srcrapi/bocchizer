@@ -30,6 +30,8 @@ class ImageDownloader:
                 result = False
                 break
 
+            time.sleep(1)
+
         return result, self.program_dir
 
     def download_image(self, search_term: str, num_image: int, ref_path: str) -> bool:
@@ -65,8 +67,8 @@ if __name__ == "__main__":
 
     urls = {
         "725y7": "Dell 725y7",
-        "UVC-G3-FLEX": "Ubiquiti UVC-G3-FLEX"
+        "UVC-G3-FLEX": "Ubiquiti UVC-G3-FLEX",
+        "680BA000006": "SALICRU 680BA000006"
     }
-
     sucess, path = downloader.create_folder(urls)
     print(f"Download sucess: {sucess}, images saved to: {path}")
