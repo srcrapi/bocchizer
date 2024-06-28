@@ -1,6 +1,6 @@
 # Bocchizer
 
-Bocchizer is a program to search based in a csv file.
+Bocchizer is a program to download images based in a csv file.
 
 ## How to run ?
 
