@@ -3,6 +3,7 @@ import json
 
 import tkinter as tk
 import pandas as pd
+import chardet
 from tkinter import filedialog
 from flask import Flask, render_template, jsonify
 from werkzeug.serving import make_server
@@ -43,13 +44,21 @@ def load_data(filename: str):
         return json.load(json_file)
 
 
+def detect_enconding(file_path: str):
+    with open(file_path, "rb") as file:
+        result = chardet.detect(file.read())
+
+    return result["encoding"]
+
+
 
 @app.route("/data")
 def get_data():
     try:
         csv_file_path = select_csv_file()
+        enconding = detect_enconding(csv_file_path)
 
-        df = pd.read_csv(csv_file_path, delimiter=";")
+        df = pd.read_csv(csv_file_path, delimiter=";", encoding=enconding)
 
         data = df.to_dict(orient="records")
 
