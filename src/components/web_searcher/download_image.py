@@ -10,6 +10,10 @@ class ImageDownloader:
         self.documents_path = os.path.join(self.home_dir, "Documents")
         self.program_dir = os.path.join(self.documents_path, "Bocchizer")
 
+    def create_directory(self, path: str) -> None:
+        if not os.path.exists(path):
+            os.makedirs(path, exist_ok=True)
+
     def create_folder(self, urls: dict[str, str], num_image: int = 6) -> tuple[bool, str]:
         if not os.path.exists(self.program_dir):
             os.mkdir(self.program_dir)
@@ -18,9 +22,10 @@ class ImageDownloader:
 
         for ref, search_term in urls.items():
             ref_path = os.path.join(self.program_dir, ref)
+            self.create_directory(ref_path)
 
-            if not os.path.exists(ref_path):
-                os.mkdir(ref_path)
+            if os.listdir(ref_path):
+                continue
 
             sucess = self.download_image(search_term, num_image, ref_path)
 
