@@ -21,7 +21,7 @@ class ImageDownloader:
         result = True
 
         for ref, search_term in urls.items():
-            ref_path = os.path.join(self.program_dir, ref)
+            ref_path = os.path.join(self.program_dir, search_term)
             self.create_directory(ref_path)
 
             if os.listdir(ref_path):
@@ -40,7 +40,7 @@ class ImageDownloader:
         return result, self.program_dir
 
     def download_image(self, search_term: str, num_image: int, ref_path: str) -> bool:
-        attempts = 0;
+        attempts = 0
 
         while attempts < 3:
             try:
