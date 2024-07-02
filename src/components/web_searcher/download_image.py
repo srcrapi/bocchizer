@@ -15,8 +15,7 @@ class ImageDownloader:
             os.makedirs(path, exist_ok=True)
 
     def create_folder(self, urls: dict[str, str], num_image: int = 6) -> tuple[bool, str]:
-        if not os.path.exists(self.program_dir):
-            os.mkdir(self.program_dir)
+        self.create_directory(self.program_dir)
 
         result = True
 
