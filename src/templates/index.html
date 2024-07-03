@@ -113,11 +113,20 @@
         text-decoration: underline;
         text-decoration-thickness: 2px;
       }
+
+      #loading {
+        display: none;
+        margin: 15px;
+        font-weight: 700;
+        color: #9c2648;
+      }
     </style>
   </head>
   <body>
     <main>
-      <button id="select-file-btn">Select file</button>
+      <button id="select-file-btn" class="button">Select file</button>
+
+      <p id="loading">Loading...</p>
 
       <div class="result-container">
         <span>
@@ -144,8 +153,12 @@
       document
         .getElementById("select-file-btn")
         .addEventListener("click", () => {
+          document.getElementById("loading").style.display = "block";
+
           fetch("/data")
             .then((response) => {
+              document.getElementById("loading").style.display = "none";
+
               if (response.ok) {
                 document.getElementById("data-table").style.display = "block";
                 document.querySelector(".result-container").style.display =
@@ -164,7 +177,10 @@
                 result.innerHTML = "Failed to download the images.";
               }
             })
-            .catch((error) => console.error("Error:", error));
+            .catch((error) => {
+              document.getElementById("loading").style.display = "none";
+              console.error("Error:", error);
+            });
         });
     </script>
     <script src="/static/background.js"></script>
