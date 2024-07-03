@@ -1,4 +1,5 @@
 import threading
+import sys
 import json
 
 import tkinter as tk
@@ -14,14 +15,22 @@ from components.web_searcher import ImageDownloader
 
 app = Flask(__name__)
 image_downloader = ImageDownloader()
+server = None
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
 
+def on_closing():
+    if server:
+        server.shutdown()
+
+    sys.exit()
+
 def html_interface():
-    webview.create_window("Bocchizer", url="http://localhost:5000", width=1280, height=760, resizable=True)
+    window = webview.create_window("Bocchizer", url="http://localhost:5000", width=1280, height=760, resizable=True)
+    window.events.closed += on_closing
     webview.start()
 
 
@@ -90,6 +99,7 @@ def show_table():
 
 
 def run_flask_app():
+    global server
     server = make_server("localhost", 5000, app)
     server.serve_forever()
 
