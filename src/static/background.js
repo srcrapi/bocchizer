@@ -2,6 +2,7 @@ class Background {
   constructor() {
     this.bodyElement = document.querySelector("body");
     this.selectFileBtn = document.querySelector("button");
+    this.loading = document.getElementById("loading");
     this.copyright = document.querySelector(".copyright");
     this.author = document.getElementById("author");
     this.dataTable = document.getElementById("data-table");
@@ -31,6 +32,7 @@ class Background {
     this.selectFileBtn.style.backgroundColor = primaryColor;
     this.dataTable.style.color = secondaryColor;
     this.result.style.color = primaryColor;
+    this.loading.style.color = primaryColor;
     this.resultContainer.style.backgroundColor = containerColor;
     this.resultContainer.style.borderColor = primaryColor;
   };
