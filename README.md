@@ -4,6 +4,8 @@ Bocchizer is a program to download images based in a csv file.
 
 ## How to run ?
 
+> You can just download it from the releases
+
 Clone this repo
 ```bash
 git clone https://github.com/srcrapi/bocchizer.git
