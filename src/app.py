@@ -54,7 +54,7 @@ def load_data(filename: str):
         return json.load(json_file)
 
 
-def detect_enconding(file_path: str):
+def detect_encoding(file_path: str):
     with open(file_path, "rb") as file:
         result = chardet.detect(file.read())
 
@@ -66,7 +66,7 @@ def detect_enconding(file_path: str):
 def get_data():
     try:
         csv_file_path = select_csv_file()
-        enconding = detect_enconding(csv_file_path)
+        enconding = detect_encoding(csv_file_path)
 
         df = pd.read_csv(csv_file_path, delimiter=delimiter, encoding=enconding)
 
