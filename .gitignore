@@ -2,3 +2,6 @@
 .venv/
 .env
 *.csv
+**/build/
+**/dist/
+*.spec
