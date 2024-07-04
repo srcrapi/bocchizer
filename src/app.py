@@ -74,12 +74,12 @@ def get_data():
         save_data(data, "data.json")
 
         for item in data:
-            result, program_path = image_downloader.create_folder(
+            result, message = image_downloader.create_folder(
                 {item['Ref']: f"{item['Marca']} {item['Ref']}"},
                 num_image=6
             )
 
-        return jsonify({"result": result, "program_path": program_path}), 200
+        return jsonify({"result": result, "message": message}), 200
 
     except Exception as e:
         print(f"Error: {e}")

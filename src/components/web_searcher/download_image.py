@@ -32,11 +32,12 @@ class ImageDownloader:
                 self.rename_images(ref_path, ref)
             else:
                 result = False
-                break
+
+                return result, "Failed to download images"
 
             time.sleep(1)
 
-        return result, self.program_dir
+        return result, f"Saved images in: {self.program_dir}"
 
     def download_image(self, search_term: str, num_image: int, ref_path: str) -> bool:
         attempts = 0

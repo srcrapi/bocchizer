@@ -171,11 +171,7 @@
             .then((data) => {
               let result = document.querySelector(".result");
 
-              if (data.result) {
-                result.innerHTML = `Saved images in: ${data.program_path}`;
-              } else {
-                result.innerHTML = "Failed to download the images.";
-              }
+              result.innerHTML = data.message;
             })
             .catch((error) => {
               document.getElementById("loading").style.display = "none";
