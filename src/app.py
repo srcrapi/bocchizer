@@ -6,7 +6,7 @@ import tkinter as tk
 import pandas as pd
 import chardet
 from tkinter import filedialog
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from werkzeug.serving import make_server
 import webview
 
@@ -16,6 +16,7 @@ from components.web_searcher import ImageDownloader
 app = Flask(__name__)
 image_downloader = ImageDownloader()
 server = None
+delimiter = ","
 
 @app.route("/")
 def index():
@@ -67,7 +68,7 @@ def get_data():
         csv_file_path = select_csv_file()
         enconding = detect_enconding(csv_file_path)
 
-        df = pd.read_csv(csv_file_path, delimiter=";", encoding=enconding)
+        df = pd.read_csv(csv_file_path, delimiter=delimiter, encoding=enconding)
 
         data = df.to_dict(orient="records")
 
@@ -84,6 +85,17 @@ def get_data():
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"error": str(e)}), 500
+
+
+@app.route("/delimiter", methods=["POST"])
+def get_delimiter():
+    global delimiter
+    delimiter = request.form.get("delimiter")
+
+    if delimiter is None:
+        return jsonify({"error": "No delimiter provided"}), 400
+
+    return jsonify({"message": "Delimiter updated successfully"}), 200
 
 
 @app.route("/table")

@@ -9,121 +9,27 @@
       href="../static/img/logo.ico"
       type="image/x-icon"
     />
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
-
-      * {
-        margin: 0;
-        padding: 0;
-        border: 0;
-        font-family: Montserrat, Arial, Helvetica, sans-serif;
-      }
-
-      html,
-      body {
-        height: 100%;
-      }
-
-      body {
-        background-image: url("../static/img/niko.png");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-        background-attachment: fixed;
-      }
-
-      main {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        height: 95.5svh;
-      }
-
-      #select-file-btn {
-        font-size: 1.5rem;
-        background-color: #9c2648;
-        color: white;
-        border-radius: 7px;
-        padding: 7px;
-        cursor: pointer;
-        transition: all 0.3s ease-in;
-      }
-
-      #select-file-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 3px 3px #fcf853;
-      }
-
-      .result-container {
-        display: none;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        margin-top: 7px;
-        padding: 7px;
-        background-color: #1e0341;
-        border: 2px solid white;
-        border-radius: 7px;
-        animation: fadeInScale 0.3s ease-in-out;
-      }
-
-      @keyframes fadeInScale {
-        from {
-          opacity: 0;
-          transform: scale(0.7);
-        }
-        to {
-          opacity: 1;
-          transform: scale(1);
-        }
-      }
-
-      #data-table {
-        display: none;
-        color: white;
-        margin-top: 10px;
-        text-decoration: none;
-      }
-
-      #data-table:hover {
-        text-decoration: underline;
-      }
-
-      .result {
-        display: none;
-        font-size: 500;
-        color: #9c2648;
-      }
-
-      footer {
-        text-align: center;
-      }
-
-      .copyright {
-        font-weight: 500;
-      }
-
-      .copyright > a {
-        text-decoration: none;
-        font-weight: 700;
-      }
-
-      .copyright > a:hover {
-        text-decoration: underline;
-        text-decoration-thickness: 2px;
-      }
-
-      #loading {
-        display: none;
-        margin: 15px;
-        font-weight: 700;
-        color: #9c2648;
-      }
-    </style>
+    <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
     <main>
+      <form id="delimiter-form" action="/delimiter" method="post">
+        <article>
+          <label for="delimiter">Choose a delimiter:</label>
+
+          <select name="delimiter" id="delimiters">
+            <option value=",">Comma</option>
+            <option value=";">Semicolon</option>
+          </select>
+        </article>
+
+        <article>
+          <input type="submit" value="Submit" />
+        </article>
+
+        <p id="delimiter-message" style="font-size: 1rem"></p>
+      </form>
+
       <button id="select-file-btn" class="button">Select file</button>
 
       <p id="loading">Loading...</p>
@@ -151,9 +57,39 @@
 
     <script>
       document
+        .getElementById("delimiter-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // previne o comportamento padrão do form
+
+          const formData = new FormData(event.target);
+
+          fetch("/delimiter", {
+            method: "POST",
+            body: new URLSearchParams(formData), // converte os dados do form para uma string de consulta
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+
+              return response.json();
+            })
+            .then((data) => {
+              let delimiterMessage =
+                document.getElementById("delimiter-message");
+
+              delimiterMessage.innerHTML = data.message;
+
+              setTimeout(() => (delimiterMessage.innerHTML = ""), 3000);
+            })
+            .catch((error) => console.error("Error:", error));
+        });
+
+      document
         .getElementById("select-file-btn")
         .addEventListener("click", () => {
           document.getElementById("loading").style.display = "block";
+          document.getElementById("delimiter-form").style.display = "none";
 
           fetch("/data")
             .then((response) => {
@@ -179,7 +115,10 @@
             });
         });
     </script>
+
+    <script src="/static/colors.js"></script>
     <script src="/static/background.js"></script>
+
     <script src="/static/main.js"></script>
   </body>
 </html>
