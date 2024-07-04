@@ -18,7 +18,7 @@ Install all the dependencies and run
 ```bash
 pip install -r requirements.txt
 
-python app.py
+python src/app.py
 ```
 
 > [!NOTE]
