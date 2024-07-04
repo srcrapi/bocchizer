@@ -1,0 +1,147 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: Montserrat, Arial, Helvetica, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-image: url("../static/img/niko.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 95.5svh;
+}
+
+#delimiter-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+
+  background-color: #9c2648;
+  border: 2px solid #fcf853;
+  border-radius: 7px;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 25px;
+  padding: 10px;
+}
+
+#delimiter-form select {
+  padding: 2px;
+  margin-left: 5px;
+  border-radius: 5px;
+}
+
+#delimiter-form input {
+  background-color: #1e0341;
+  color: white;
+
+  padding: 6px;
+  border-radius: 5px;
+  transition: transform 0.3s ease-in;
+}
+
+#delimiter-form input:hover {
+  transform: translateY(-2px);
+  cursor: pointer;
+}
+
+#select-file-btn {
+  font-size: 1.5rem;
+  background-color: #9c2648;
+  color: white;
+  border-radius: 7px;
+  padding: 7px;
+  cursor: pointer;
+  transition: all 0.3s ease-in;
+}
+
+#select-file-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 3px 3px #fcf853;
+}
+
+.result-container {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 7px;
+  padding: 7px;
+  background-color: #1e0341;
+  border: 2px solid white;
+  border-radius: 7px;
+  animation: fadeInScale 0.3s ease-in-out;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+#data-table {
+  display: none;
+  color: white;
+  margin-top: 10px;
+  text-decoration: none;
+}
+
+#data-table:hover {
+  text-decoration: underline;
+}
+
+.result {
+  display: none;
+  font-size: 500;
+  color: #9c2648;
+}
+
+footer {
+  text-align: center;
+}
+
+.copyright {
+  font-weight: 500;
+}
+
+.copyright > a {
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.copyright > a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+#loading {
+  display: none;
+  margin: 15px;
+  font-weight: 700;
+  color: #9c2648;
+}
