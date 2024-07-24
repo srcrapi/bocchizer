@@ -127,7 +127,7 @@ if __name__ == "__main__":
         import ctypes
 
         if not ctypes.windll.shell32.IsUserAnAdmin():
-            ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv + ["--executable"]), None, 1)
+            ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv + ["--elevated"]), None, 1)
             sys.exit()
     else:
         if os.geteuid() != 0:
