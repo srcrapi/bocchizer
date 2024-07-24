@@ -1,6 +1,8 @@
 import threading
 import sys
 import json
+import platform
+import os
 
 import tkinter as tk
 import pandas as pd
@@ -117,12 +119,22 @@ def run_flask_app():
     server.serve_forever()
 
 
-if __name__ == "__main__":
-    if not pyuac.isUserAdmin():
-        print("Re-launching as admin")
-        pyuac.runAsAdmin()
-    else:
-        flask_theread = threading.Thread(target=run_flask_app)
-        flask_theread.start()
+def verify_system():
+    return platform.system() == "Windows"
 
-        html_interface()
+
+if __name__ == "__main__":
+    if verify_system():
+        if not pyuac.isUserAdmin():
+            print("Re-launching as admin")
+            pyuac.runAsAdmin()
+            sys.exit()
+    else:
+        if os.geteuid() != 0:
+            args = ["sudo", "python3"] + sys.argv
+            os.execvp("sudo", args)
+
+    flask_theread = threading.Thread(target=run_flask_app)
+    flask_theread.start()
+
+    html_interface()
