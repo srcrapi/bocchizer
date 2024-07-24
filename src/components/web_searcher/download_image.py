@@ -6,9 +6,8 @@ from icrawler.builtin import GoogleImageCrawler
 
 class ImageDownloader:
     def __init__(self):
-        self.home_dir = os.path.expanduser("~")
-        self.documents_path = os.path.join(self.home_dir, "Documents")
-        self.program_dir = os.path.join(self.documents_path, "Bocchizer")
+        self.root_dir = os.path.expanduser("/")
+        self.program_dir = os.path.join(self.root_dir, "Bocchizer")
 
     def create_directory(self, path: str) -> None:
         if not os.path.exists(path):
@@ -54,7 +53,6 @@ class ImageDownloader:
                 google_crawler.crawl(
                     keyword=search_term,
                     max_num=num_image,
-                    filters={"size": "medium"}
                 )
 
                 return True

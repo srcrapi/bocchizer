@@ -9,6 +9,7 @@ from tkinter import filedialog
 from flask import Flask, render_template, jsonify, request
 from werkzeug.serving import make_server
 import webview
+import pyuac
 
 from components.web_searcher import ImageDownloader
 
@@ -117,7 +118,11 @@ def run_flask_app():
 
 
 if __name__ == "__main__":
-    flask_theread = threading.Thread(target=run_flask_app)
-    flask_theread.start()
+    if not pyuac.isUserAdmin():
+        print("Re-launching as admin")
+        pyuac.runAsAdmin()
+    else:
+        flask_theread = threading.Thread(target=run_flask_app)
+        flask_theread.start()
 
-    html_interface()
+        html_interface()
