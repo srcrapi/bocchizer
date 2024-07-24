@@ -11,7 +11,6 @@ from tkinter import filedialog
 from flask import Flask, render_template, jsonify, request
 from werkzeug.serving import make_server
 import webview
-import pyuac
 
 from components.web_searcher import ImageDownloader
 
@@ -125,9 +124,10 @@ def verify_system():
 
 if __name__ == "__main__":
     if verify_system():
-        if not pyuac.isUserAdmin():
-            print("Re-launching as admin")
-            pyuac.runAsAdmin()
+        import ctypes
+
+        if not ctypes.windll.shell32.IsUserAnAdmin():
+            ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv + ["--executable"]), None, 1)
             sys.exit()
     else:
         if os.geteuid() != 0:
